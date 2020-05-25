@@ -32,7 +32,7 @@ const getProducts = async () => {//31:27
 
 const updatePrice = async (update) => {
     return productsModel.findOneAndUpdate({ barcode: update.barcode }, { $set: { name: update.price } }, { runValidators: true, new: true })
-}
+} 
 
 const deleteItem = async (barcode) => {
     return productsModel.deleteOne({ 'barcode': barcode }, (err) => {
@@ -42,4 +42,4 @@ const deleteItem = async (barcode) => {
             console.log('barcode: ',barcode, 'is deleted');
     });
 }
-module.exports = { createProducts, getProducts, updatePrice, deleteItem }
+module.exports = { createProducts, getProducts, updatePrice, deleteItem }//יצוא

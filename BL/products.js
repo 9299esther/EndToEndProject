@@ -1,6 +1,7 @@
 module.exports = function products(DL) {
 
     return {//CRUD
+        //todo  validichion
         create: (data) => {
             const { barcode, name, price, description} = data
             return DL.createProducts(data)
