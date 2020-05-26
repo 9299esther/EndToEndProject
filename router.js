@@ -8,38 +8,46 @@ function Router(app) {
         try {
             const { body } = req
 
-            const result = await BL.products.create({ barcode: body.barcode, name: body.name, price: body.price, description: body.description })
+            const result = await BL.products.create({
+                barcode: body.barcode,
+                name: body.name,
+                price: body.price,
+                department: body.department,
+                category: body.category,
+                image: body.image, 
+                brand: body.brand,
+                tags: body.tags,
+                description: body.description
+            })
             res.send(result)//http://localhost:1111/prduct //[{...}]
         } catch (error) {
             res.send({ error: error.message || error })
         }
     })
 
-    app.get('/prducts', async (req, res) => {//v
+    app.get('/prduct', async (req, res) => {//v
         try {
             const result = await BL.products.read({ barcode: '', name: '', price: '' })
-            res.send(result) //http://localhost:1111/prducts //[]
+            res.send(result) //http://localhost:1111/prduct //[]
         } catch (error) {
             res.send({ error: error.message || error })
         }
     })
-    app.put(`/prduct/:barcode`, async (req, res) => {//?
-        try { //http://localhost:1234/prduct/:1234?newPrice=555555
-            const { barcode } = req.params,
-              //  { newPrice } = req.query//?
-                 { body } = req
-            const result = await BL.products.update(barcode, body)
-            res.send(result)//http://localhost:1111/prduct/:2596 
+    app.put('/prduct', async (req, res) => {//?
+        try {
+            const { body } = req
+            const result = await BL.products.update({ barcode: body.barcode, price: body.price })
+            res.send(result)//http://localhost:1111/prduct 
         } catch (error) {
             res.send({ error: error.message || error })
         }
     })
 
-    app.delete('/prduct/:barcode', async (req, res) => {
+    app.delete('/prduct', async (req, res) => {
         try {
-            const { barcode } = req.params
-            const result = await BL.products.findOneAndDelete({ barcode: barcode })
-            res.send(result) //http://localhost:1111/prducts //[]
+            const { body } = req
+            const result = await BL.products.delete({ barcode: body.barcode })
+            res.send(result) //http://localhost:1111/prduct //[]
         } catch (error) {
             res.send({ error: error.message || error })
         }

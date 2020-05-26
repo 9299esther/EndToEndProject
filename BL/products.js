@@ -3,7 +3,7 @@ module.exports = function products(DL) {
     return {//CRUD
         //todo  validichion
         create: (data) => {
-            const { barcode, name, price, description} = data
+            const { barcode, name, price, department, category, image, brand, tags, description} = data
             return DL.createProducts(data)
         },
 
@@ -13,8 +13,7 @@ module.exports = function products(DL) {
         },
 
         update: (data) => {
-            const { barcode, newPrice } = data
-            return DL.updatePrice(barcode, newPrice)
+            return DL.updatePrice(data)
         },
 
         delete: (data) => {
