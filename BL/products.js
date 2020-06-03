@@ -1,24 +1,59 @@
 module.exports = function products(DL) {
 
     return {//CRUD
-        //todo  validichion
-        create: (data) => {
-            const { barcode, name, price, department, category, image, brand, tags, description} = data
-            return DL.createProducts(data)
+        /*חיפוש
+        -ברקוד readOne v
+        -תיאור שם v
+        
+        סינון
+        -מחיר
+        -קטגוריה
+        
+        */
+        create: async(data) => {
+            const { barcode} = data
+            let dlReaturn = await DL.getOneProductByBarcode(barcode)
+            if (!dlReaturn[0])
+                return DL.createProducts(data)
+            throw 'barcode exists'
+                         
         },
 
-        read: (data) => {
-            const { barcode, name, price } = data
+        read: () => {
             return DL.getProducts()
         },
 
-        update: (data) => {
-            return DL.updatePrice(data)
+        readOneByPrice:(data)=>{
+           return DL.getAndFilterAndByPrice(data)
         },
 
-        delete: (data) => {
+        readOneByCategory:(Category)=>{
+            return DL.getAndFilterByCategory(Category)
+        },
+
+
+        readOne: async (barcode) => {
+            let dlReaturn = await DL.getOneProductByBarcode(barcode)
+            if (dlReaturn[0])
+                return dlReaturn
+            throw 'barcode dos not exist'
+        },
+
+        update: async (data) => {
+            let dlReaturn = await DL.updatePrice(data)
+            if (dlReaturn)
+                return dlReaturn
+            throw 'barcode dos not exist'
+
+        },
+
+        delete: async(data) => {
             const { barcode } = data
-            return DL.deleteItem(barcode)
+            let dlReaturn = await DL.getOneProductByBarcode(barcode)
+            if (dlReaturn[0])
+                return DL.deleteItem(barcode)
+            throw 'barcode exists'
+                        
         }
     }
 
