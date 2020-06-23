@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 mongoose.connect(
-    'mongodb+srv://admin:1999@cluster0-qqjcq.mongodb.net/test?retryWrites=true&w=majority',
+    process.env.MCS,
     {
         auto_reconnect: true,
         useNewUrlParser: true,
@@ -11,16 +11,17 @@ mongoose.connect(
     }
     , (err) => {
         if (err) throw 'mongo connection problem'
-        else console.log('mongo connected');//בדיקת חיבור
-    })//20:26 mongoDB
+        else console.log('mongo connected');
+    })
 
-const productsSchema = {//26:00
+const productsSchema = {
+    date:Date,
     barcode: Number,
     name: String,
     price: Number,
     department: String,
     category: String,
-    image: String, /*URL, *///cnot reed url
+    image: String, 
     brand: String,
     tags: String,
     description: String,
@@ -32,24 +33,45 @@ const createProducts = async (data) => {
     return productsModel.create(data)
 }
 
-const getProducts = async () => {//31:27
-    return productsModel.find({}, 'barcode name price description')//איזה עמודות יוצגו, ללא פילטור
+const getProducts = async () => {
+    return productsModel.find({}, 'date barcode name price image category description brand tags ')
 }
 
 
-const getAndFilterAndByPrice = (price) => {
-        return productsModel.find({ price }, 'barcode name price')
+const getAndFilterAndByPrice = ( to) => {
+    return productsModel.find({ price: { '$gt': 0, '$lt': to } }, 'barcode name price  brand tags')
 
 }
 
 const getAndFilterByCategory = (category) => {
-    return productsModel.find({ category }, 'barcode name price')
+    return productsModel.find({ category }, 'barcode name price category  brand tags')
 }
 
-const getOneProductByBarcode = (data) => {
-    const { from,to } = data
-    return productsModel.find({ price: { '$gt':from ,'$lt':to}}, 'barcode name price')
+const getAndFilterByBrand = (brand) => {
+    return productsModel.find({ brand }, 'barcode name price category brand tags')
+}
 
+const getAndFilterByTags = (tags) => {
+    return productsModel.find({ tags }, 'barcode name price category brand tags')
+}
+
+const getOneProductByBarcode = (barcode) => {
+    if (Number(barcode))
+        return productsModel.find({ barcode }, 'barcode name price description')
+    return productsModel.find({ description:barcode }, 'barcode name price description')
+
+}
+
+const getAndSortByPrice = async () => {
+    return productsModel.find().sort('price')
+}
+
+const getAndSortByPriceFromHigh = async () => {
+    return productsModel.find().sort([['price',-1]])
+}
+
+const getAndSortByName = async () => {
+    return productsModel.find().sort('name')
 }
 
 const updatePrice = async (update) => {
@@ -62,4 +84,10 @@ const deleteItem = async (barcode) => {
             throw err;
     });
 }
-module.exports = { createProducts, getProducts ,getAndFilterAndByPrice ,getAndFilterByCategory , getOneProductByBarcode, updatePrice, deleteItem }//יצוא
+
+    module.exports = { createProducts, getProducts,
+         getAndFilterAndByPrice, getAndFilterByCategory,
+         getAndFilterByBrand,getAndFilterByTags,
+          getOneProductByBarcode,getAndSortByPrice,
+          getAndSortByPriceFromHigh,getAndSortByName,
+           updatePrice, deleteItem }//יצוא
